@@ -1,4 +1,5 @@
-import {Suspense} from "react";
+import {Suspense, useContext} from "react";
+import { CartContext } from "@/providers/cart";
 import {Link, Navigate, Outlet} from "react-router-dom";
 import {useMutation} from "@tanstack/react-query";
 import {logout} from "@/api/auth";
@@ -24,6 +25,9 @@ export function RequireAuth(): JSX.Element {
 }
 
 function Header({currentUser}: {currentUser: User}): JSX.Element {
+  const {cart} = useContext(CartContext);
+  const totalQuantity = Object.values(cart).reduce((a, b) => a + b, 0);
+
   const mutation = useMutation({
     mutationFn: logout,
     onSuccess: () => {
@@ -44,6 +48,9 @@ function Header({currentUser}: {currentUser: User}): JSX.Element {
         <button className="text-white" onClick={() => mutation.mutate()}>
           Logout
         </button>
+        <Link className="text-white" to="/cart" data-test="link-to-cart">
+          Cart {totalQuantity}
+        </Link>
       </div>
     </div>
   );

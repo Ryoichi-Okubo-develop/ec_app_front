@@ -29,3 +29,22 @@ export const searchProducts = async ({
     }
     return await res.json();
 };
+
+export const getProducts = async (
+    productIds: number[],
+): Promise<ProductWithDetails[]> => {
+    const baseUrl = `/api/products`;
+    const queryParams = new URLSearchParams();
+
+    if (productIds.length > 0) {
+        queryParams.append("productIds", productIds.join(","));
+    }
+
+    const url = `${baseUrl}?${queryParams.toString()}`;
+
+    const res = await fetch(url);
+    if (!res.ok) {
+        await throwResponseError(res);
+    }
+    return await res.json();
+};
